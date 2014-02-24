@@ -15,10 +15,10 @@ name: DBIx-ParseDSN
 provides:
   DBIx::ParseDSN:
     file: lib/DBIx/ParseDSN.pm
-    version: v0.9.0
+    version: v0.9.1
   DBIx::ParseDSN::Default:
     file: lib/DBIx/ParseDSN/Default.pm
-    version: v0.9.0
+    version: v0.9.1
 requires:
   Class::Load: 0.20
   DBI: 1.63
@@ -36,4 +36,4 @@ requires:
   utf8::all: 0.011
 resources:
   license: http://www.perlfoundation.org/artistic_license_1_0
-version: v0.9.0
+version: v0.9.1
