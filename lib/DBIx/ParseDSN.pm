@@ -11,7 +11,7 @@ use DBIx::ParseDSN::Default;
 use base 'Exporter';
 our @EXPORT = qw/parse_dsn/;
 
-use version; our $VERSION = qv('0.9.1');
+use version; our $VERSION = qv('0.9.2');
 
 ## this is really a utility function, but there is no ::Util module
 ## yet, so it's here for now
@@ -24,7 +24,7 @@ sub _split_dsn {
 
 }
 
-## a method to check health status of parsers dsn
+## a method to check health status of parsers DSN
 sub _dsn_sanity_check {
 
     my $self = shift;
@@ -37,12 +37,12 @@ sub _dsn_sanity_check {
     ## group3 will be driver specific options. group3 may include colons
 
     if ( not defined $self->dsn ) {
-        carp "dsn isn't set";
+        carp "DSN isn't set";
         return;
     }
 
     if ( _split_dsn($self->dsn) != 3 ) {
-        carp "dsn does not contain the expected pattern with 2 separating colons.";
+        carp "DSN does not contain the expected pattern with 2 separating colons.";
     }
 
 }
@@ -83,7 +83,7 @@ DBIx::ParseDSN - Parse DSN's, DBI connection strings.
 
 =head1 VERSION
 
-This document describes DBIx::ParseDSN version 0.9.1
+This document describes DBIx::ParseDSN version 0.9.2
 
 =head1 SYNOPSIS
 
@@ -96,6 +96,18 @@ This document describes DBIx::ParseDSN version 0.9.1
     $dsn->database; ## /var/foo.db
 
     $dsn->dbd_driver; ## DBD::SQLite
+
+    ## information in user string
+    my $dsn2 = parse_dsn( 'dbi:Oracle:host=foobar;port=1521', 'scott@DB/tiger' )
+    $dsn2->database; ## DB
+    $dsn2->port; ## 1521
+    $dsn2->host; ## foobar
+
+    ## uri connector
+    my $dsn3 = parse_dsn( 'dbi:Oracle://myhost:1522/ORCL' )
+    $dsn3->database; ## ORCL
+    $dsn3->port; ## 1522
+    $dsn3->host; ## myhost
 
 =head1 DESCRIPTION
 
@@ -124,46 +136,10 @@ else.
 
 =head2 parse_dsn( $dsn );
 
-Parses a dsn and returns a L<DBIx::ParseDSN::Default> object that has
+Parses a DSN and returns a L<DBIx::ParseDSN::Default> object that has
 properties reflecting the parameters found in the DSN.
 
 See L<DBIx::ParseDSN::Default/DSN ATTRIBUTES> for details.
-
-=head1 DEPENDENCIES
-
-=over 4
-
-=item DBI
-
-=item Locale::Maketext::Lexicon
-
-=item Moose
-
-=item Test::FailWarnings
-
-=item Test::Moose
-
-=item Test::Most
-
-=item Test::Perl::Critic
-
-=item Test::Pod
-
-=item Test::Pod::Coverage
-
-=item URI
-
-=item utf8::all
-
-=item Class::Load
-
-=item Module::Load::Conditional
-
-=item Moose
-
-=item MooseX::Aliases
-
-=back
 
 =head1 BUGS AND LIMITATIONS
 

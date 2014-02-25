@@ -10,15 +10,10 @@ use Carp qw< carp croak confess cluck >;
 use DBI; # will use parse_dsn from here
 use URI;
 
-use version; our $VERSION = qv('0.9.1');
+use version; our $VERSION = qv('0.9.2');
 
 use Moose;
 use MooseX::Aliases;
-
-with( 'MooseX::OneArgNew' => {
-    type => 'Str',
-    init_arg => 'dsn',
-});
 
 has dsn => ( isa => "Str", is => "ro", required => 1 );
 
@@ -60,12 +55,11 @@ around host => sub {
 
 sub names_for_database {
     return (
-        qw/database dbname namd db/,
-
+        qw/database dbname name db/,
+        "sid", ## Oracle
         "file name", "initialcatalog", ## from ADO, but generic
                                         ## enough to allow in this
                                         ## module
-
         );
 }
 sub names_for_host {
@@ -162,6 +156,12 @@ sub parse {
 
         my($k,$v) = split /=/, $_, 2;
 
+        ## An Oracle special case that would otherwise mess things up
+        if ( $self->driver eq "Oracle" and $k eq "SERVER" ) {
+            ## example: SERVER=POOLED
+            next;
+        }
+
         ## a //foo:xyz/bar type of uri, like Oracle
         if ( $k =~ m|^//.+/.+| and not defined $v and @pairs == 1 ) {
 
@@ -201,6 +201,12 @@ sub parse {
 
     }
 
+    ## Another Oracle speciality, strip ":POOLED" from db
+    if ( $self->driver eq "Oracle" and
+             ( my $new_db = $self->database ) =~ s/:POOLED$// ) {
+        $self->database($new_db);
+    }
+
 }
 
 ## intercept constructor to allow 1st arg DSN and 2nd arg user string,
@@ -223,7 +229,8 @@ around BUILDARGS => sub {
     ## look for db in user string - will not override one found in dsn
     if ( defined $args[1] ) {
         if ( $args[1] =~ /@(.+)$/ ) {
-            $h{database} = $1;
+            (my $db = $1) =~ s|/.*||;
+            $h{database} = $db;
         }
     }
 
@@ -255,7 +262,7 @@ L<DBIx::ParseDSN/parse_dsn> which is the intended way to achieve this.
 
 =head1 VERSION
 
-This document describes DBIx::ParseDSN::Default version 0.9.1
+This document describes DBIx::ParseDSN::Default version 0.9.2
 
 =head1 SYNOPSIS
 
@@ -333,7 +340,7 @@ The 5 values returned by DBI->parse_dsn
 
 =head2 is_local
 
-True if the dns is local. File based db drivers are local, and network
+True if the dsn is local. File based db drivers are local, and network
 connections to localhost or 127.0.0.1 are local.
 
 =head2 is_remote
@@ -376,44 +383,6 @@ This method is mainly for internal use.
 
 The perl module driver for this specific dsn. Currently the 2nd value
 of the dsn string prefixed by DBD:: , ie DBD::SQLite.
-
-=head1 DEPENDENCIES
-
-=head1 DEPENDENCIES
-
-=over 4
-
-=item DBI
-
-=item Locale::Maketext::Lexicon
-
-=item Moose
-
-=item Test::FailWarnings
-
-=item Test::Moose
-
-=item Test::Most
-
-=item Test::Perl::Critic
-
-=item Test::Pod
-
-=item Test::Pod::Coverage
-
-=item URI
-
-=item utf8::all
-
-=item Class::Load
-
-=item Module::Load::Conditional
-
-=item Moose
-
-=item MooseX::Aliases
-
-=back
 
 =head1 BUGS AND LIMITATIONS
 
