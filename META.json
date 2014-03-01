@@ -4,7 +4,7 @@
       "TorbjÃ¸rn Lindahl <torbjorn.lindahl@gmail.com>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "Module::Build version 0.4204",
+   "generated_by" : "Module::Build version 0.4205",
    "license" : [
       "artistic_1"
    ],
@@ -22,13 +22,12 @@
       "runtime" : {
          "requires" : {
             "Class::Load" : "0.20",
-            "DBI" : "1.63",
-            "Locale::Maketext::Lexicon" : "0.96",
+            "DBI" : "1.628",
             "Module::Load::Conditional" : "0.54",
-            "Moose" : "2.1005",
-            "MooseX::Aliases" : "0.10",
+            "Moo" : "1.004002",
+            "MooX::Aliases" : "0.001000",
+            "MooX::HandlesVia" : "0.001005",
             "Test::FailWarnings" : "0.008",
-            "Test::Moose" : "2.1005",
             "Test::Most" : "0.31",
             "Test::Perl::Critic" : "1.02",
             "Test::Pod" : "1.48",
@@ -41,18 +40,18 @@
    "provides" : {
       "DBIx::ParseDSN" : {
          "file" : "lib/DBIx/ParseDSN.pm",
-         "version" : "v0.9.2"
+         "version" : "v0.9.3"
       },
       "DBIx::ParseDSN::Default" : {
          "file" : "lib/DBIx/ParseDSN/Default.pm",
-         "version" : "v0.9.2"
+         "version" : "v0.9.3"
       }
    },
    "release_status" : "stable",
    "resources" : {
       "license" : [
-         "http://www.perlfoundation.org/artistic_license_1_0"
+         "http://opensource.org/licenses/artistic-license.php"
       ]
    },
-   "version" : "v0.9.2"
+   "version" : "v0.9.3"
 }
